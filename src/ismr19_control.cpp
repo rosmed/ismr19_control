@@ -85,15 +85,14 @@ public:
     client.waitForServer();    
 
     moveit_msgs::ExecuteTrajectoryGoal goal;
-    /*
-    goal.trajectory = trajectory.joint_trajectory;
+    goal.trajectory.joint_trajectory = trajectory.joint_trajectory;
     client.sendGoal(goal);
     bool finished_before_timeout = client.waitForResult(ros::Duration(60.0));
     if(finished_before_timeout){
       actionlib::SimpleClientGoalState state = client.getState();
       ROS_INFO("Action finished: %s",state.toString().c_str());
     }
-    */
+
   }  
   
   void entry_cb( const geometry_msgs::Point& point ){
