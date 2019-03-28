@@ -99,11 +99,15 @@ public:
   void igtl_point_cb ( const ros_igtl_bridge::igtlpoint& point ){
     if(point.name.compare("Entry") == 0){
       valid_entry = true;
-      entry = point.pointdata;
+      entry.x = point.pointdata.x / 1000.0; // Convert mm to m
+      entry.y = point.pointdata.y / 1000.0; // Convert mm to m
+      entry.z = point.pointdata.z / 1000.0; // Convert mm to m      
       ROS_INFO("[ismr19_control] Entry point has been received: \n");
     } else if(point.name.compare("Target") == 0){
       valid_target = true;
-      target = point.pointdata;
+      target.x = point.pointdata.x / 1000.0; // Convert mm to m
+      target.y = point.pointdata.y / 1000.0; // Convert mm to m
+      target.z = point.pointdata.z / 1000.0; // Convert mm to m      
       ROS_INFO("[ismr19_control] Target point has been received: \n");
     }
     if( valid_entry && valid_target ){
