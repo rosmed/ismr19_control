@@ -18,6 +18,7 @@ find_package(catkin REQUIRED COMPONENTS
   pluginlib
   geometric_shapes
   roscpp
+  ros_igtl_bridge
 )
 find_package(Eigen3 REQUIRED)
 ## System dependencies are found with CMake's conventions

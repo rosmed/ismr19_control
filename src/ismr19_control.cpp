@@ -19,6 +19,8 @@
 
 #include <tf/transform_datatypes.h>
 
+#include "ros_igtl_bridge/igtlpoint.h"
+
 class ismr19_control{
 
 private:
@@ -29,9 +31,8 @@ private:
   geometry_msgs::Point entry;
   geometry_msgs::Point target;
 
-  ros::Subscriber sub_entry;
-  ros::Subscriber sub_target;
   ros::Subscriber sub_result;
+  ros::Subscriber sub_igtl_point;
   
   bool valid_entry;
   bool valid_target;
@@ -43,8 +44,8 @@ public:
     valid_entry(false),
     valid_target(false){
     
-    sub_entry = nh.subscribe( "entry", 10, &ismr19_control::entry_cb, this );    
-    sub_target = nh.subscribe( "target", 10, &ismr19_control::target_cb, this );    
+    sub_igtl_point = nh.subscribe( "/IGTL_POINT_IN", 10, &ismr19_control::igtl_point_cb, this );
+    
     sub_result = nh.subscribe( "/execute_trajectory/result", 10, &ismr19_control::result_cb, this );    
 
   }
@@ -93,24 +94,23 @@ public:
       ROS_INFO("Action finished: %s",state.toString().c_str());
     }
 
-  }  
+  }
+
+  void igtl_point_cb ( const ros_igtl_bridge::igtlpoint& point ){
+    if(point.name.compare("Entry") == 0){
+      valid_entry = true;
+      entry = point.pointdata;
+      ROS_INFO("[ismr19_control] Entry point has been received: \n");
+    } else if(point.name.compare("Target") == 0){
+      valid_target = true;
+      target = point.pointdata;
+      ROS_INFO("[ismr19_control] Target point has been received: \n");
+    }
+    if( valid_entry && valid_target ){
+      execute();
+    }
+  }
   
-  void entry_cb( const geometry_msgs::Point& point ){
-    valid_entry = true;
-    entry = point;
-    if( valid_entry && valid_target ){
-      execute();
-    }
-  }
-
-  void target_cb( const geometry_msgs::Point& point ){
-    valid_target = true;
-    target = point;
-    if( valid_entry && valid_target ){
-      execute();
-    }
-  }
-
   void execute(){
     
     ros::AsyncSpinner spinner(1);
