@@ -18,6 +18,7 @@ find_package(catkin REQUIRED COMPONENTS
   pluginlib
   geometric_shapes
   roscpp
+  rospy
   ros_igtl_bridge
 )
 find_package(Eigen3 REQUIRED)
